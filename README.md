@@ -158,7 +158,7 @@ Open http://localhost:4000/ui in your browser and log in with your master key (*
 ![LiteLLM Sequence Diagram](./docs/img/CustomGuardrail_Seq_Diagram.png)
 
 ### PII Check Service - running on localhost:5001
-- Create a python program ["pii_check_service.py"](./guardrails/check/pii_check_service.py) that will run as a service with the "/check" endpoint. Using regex this endpoint will idetify PII patterns and return action=<ALLOW or BLOCK> along with the reason=<[{'type': '<US_SSN|EMAIL>'}]>.
+- Create a python program ["pii_check_service.py"](https://github.com/srinihashi/pii_check_service/blob/main/pii_check_service.py) that will run as a service with the "/check" endpoint. Using regex this endpoint will idetify PII patterns and return action=<ALLOW or BLOCK> along with the reason=<[{'type': '<US_SSN|EMAIL>'}]>.
 
 - Start the app.py service (running on port 5001) and test if its live by calling the "/health" endpoint.
 
@@ -198,6 +198,9 @@ Login to the [Litellm UI](http://localhost:4000/ui/) and test the new custom gua
 
 
 ### PII Check Service - running in Kubernetes
+- Create a helm chart for the custom guardrail
+See helm chart [here](https://github.com/srinihashi/pii_check_service/tree/main/k8s_deployment/helm/check-microservice)
+
 
 - Create a docker image of the check_pii_service
 ```
