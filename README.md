@@ -145,10 +145,46 @@ Open http://localhost:4000/ui in your browser and log in with your master key (*
 
 --- Create a Custom Guardrail ---
 
-1. Local Guardrail using RegEx
 
-- Change directory to "guardrails/local"
-- Create a python program "custom_guardrail_local.py"
+1. Custom Guardrail - using RegEx
+## Sequence Diagram
+![LiteLLM Sequence Diagram](./docs/img/CustomGuardrail_Seq_Diagram.png)
 
-2. Guardrail as a Service - using RegEx
-3. Guardrail as a Service - using Presidio - runninng in Kubernetes
+- Create a python program ["app.py"](./guardrails/check/app.py) that will run as a service with the "/check" endpoint. Using regex this endpoint will idetify PII patterns and return action=<ALLOW or BLOCK> along with the reason=<[{'type': '<US_SSN|EMAIL>'}]>.
+
+- Start the app.py service (running on port 5001) and test if its live by calling the "/health" endpoint.
+
+- Create a python program ["custom_pii_guardrail_api.py"](./guardrails/custom_pii_guardrail_api.py) that will use the CustomGuardrail class and implement the apply_guardrail() method.
+
+- Edit the .env file and set the "MY_GUARDRAIL_BASE_API_URL" to point to the app.py service.
+  - http://host.docker.internal:5001 (for Docker) or http://127.0.0.1:5001 (for localhost)
+
+- Edit the config.ymll file and configure the new guardrail ("custom_pii_guardrail")
+Add the following lines:
+```
+guardrails: 
+  - guardrail_name: "my-custom-pii-guardrail-api"
+    litellm_params:
+      guardrail: custom_pii_guardrail_api.myCustomGuardrailAPI  # 👈 Key change
+      mode: ["pre_call", "post_call", "during_call"]               # runs apply_guardrail method
+      default_on: False
+      api_base: os.environ/MY_GUARDRAIL_BASE_API_URL
+```
+
+- Edit the docker-compose.yaml file and add a new volume to the Custom Guardrail ("custom_pii_guardrail_api")
+
+```
+    volumes:
+      - ./config.yml:/var/config.yml
+      - ./guardrails/custom_pii_guardrail_api.py:/var/custom_pii_guardrail_api.py # ✅ add this line
+```
+
+- Restart Litellm
+```
+docker-compose down
+docker-compose up -d
+```
+
+- Test your new custom guardrail
+Login to the [Litellm UI](http://localhost:4000/ui/) and test the new custom guardrail.
+

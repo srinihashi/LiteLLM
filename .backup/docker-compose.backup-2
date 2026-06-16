@@ -9,7 +9,10 @@ services:
     ## Uncomment these lines to start proxy with a config.yaml file ##
     volumes:
       - ./config.yml:/var/config.yml
+      - ./guardrails/custom_pii_guardrail.py:/var/custom_pii_guardrail.py
+      - ./guardrails/custom_pii_guardrail_local.py:/var/custom_pii_guardrail_local.py
       - ./guardrails/custom_pii_guardrail_api.py:/var/custom_pii_guardrail_api.py
+      - ./guardrails/custom_pii_guardrail_api_presidio.py:/var/custom_pii_guardrail_api_presidio.py
 
     command:
       - "--config=/var/config.yml"
