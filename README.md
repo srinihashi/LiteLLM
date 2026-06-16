@@ -42,7 +42,7 @@ One such system/platform is [LiteLLM](https://www.litellm.ai/) - It brings all t
 
 Sequence Diagram
 ![LiteLLM Sequence Diagram](https://sequencediagram.org/index.html?presentationMode=readOnly&shrinkToFit=true#initialData=C4S2BsFMAIGEFcDOwD2BbaBxeBDATgCZ44jgBQZAqopHgLR0B8AFAIwCUAMmJJ5wLIAuJLWgAHPOjHAy3YLwENGchULhJUabPiIlwzEXnGS009rJ59+StuwAKASQcB9WAAtIAYwDWzgMq0AG4gnpCC0IbGUjIqVgA8DI4u7l6+AXjBoYJ4kMDweAB20ADeOJ6gKAXhAIJ8APIA6tAAPtAAQpx1sADSADTQOTiIleHFANoASgCi1X51AHIAugC+y1Q0eAl0sQKCIABmJWUVVe2dPWsFKPLQKIGi1LSCxUnQdijgIQCe0ABqIB8cCc1jtrExbFZwgcjuUAVVap0GiDLAItpCBpBEGJKjQLPIrEpQeEEMh0NpCMRSMwclicZBzKCbBwkq4PD5-EEQmEMbSCrjQVsWSl2elMtzSrCRtBao0Wmcun0MUMpeNprMFit1rQ0Si1NCJSdwh0FZdrjA7g8NqNXu9Pp4fv9AcCtZsGEToPrjnCavUkWQrjcLUZHnhRjTsXzIGsgA)
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 ## Installation
 
