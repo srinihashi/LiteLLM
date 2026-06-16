@@ -4,7 +4,7 @@
 
 Before we begin, let's take a moment to built some context - ["Introduction"](https://docs.google.com/presentation/d/113l37j2Iu_cNM3habuHdruPWsan5Ng_iw6t_zEbaOUQ/edit?usp=sharing)
 
-## Problem
+## Challenges
 
 As we have see from the "Introduction", there are serious concerns especially when using in Enterprises. Here are a few:
 
@@ -36,10 +36,6 @@ To address these concerns, we need a centralized system that can monitor and con
 One such system/platform is [LiteLLM](https://www.litellm.ai/) - It brings all these capabilities into one simple to manage LLM Gateway.
 ![LiteLLM Architecture](./docs/img/LiteLLM.png)
 
-## Architecture
-Sequence Diagram
-![LiteLLM Sequence Diagram](./docs/img/CustomGuardrail_Seq_Diagram.png)
-
 ## Installation
 
 ### Pre-Requisites
@@ -63,21 +59,33 @@ Please ensure the following pre-requisites have been installed:
 
 **Step-1:** Install LiteLLM locally in Docker
 Change directory into "litellm-proxy" and complete the following steps.
-1-a: Pull the LiteLLM database image
-```   $ docker pull ghcr.io/berriai/litellm-database:main-latest```
+- Pull the LiteLLM database image
 
-1-b: Download the docker compose file
-```    $ curl -O https://raw.githubusercontent.com/BerriAI/litellm/main/docker-compose.yml```
+```
+      $ docker pull ghcr.io/berriai/litellm-database:main-latest
+```
 
-1-c: Add the master key - you can change this after setup
-```   $ echo 'LITELLM_MASTER_KEY="<YOUR_MASTER_KEY>"' > .env```
+- Download the docker compose file
+
+```
+      $ curl -O https://raw.githubusercontent.com/BerriAI/litellm/main/docker-compose.yml
+```
+
+- Add the master key - you can change this after setup
+
+```
+      $ echo 'LITELLM_MASTER_KEY="<YOUR_MASTER_KEY>"' > .env
+```
 *NOTE: default is "sk-1234"*
 
-1-d: Add the litellm salt key. Used to encrypt/decrypt your LLM API key credentials
-```   $ echo 'LITELLM_SALT_KEY="<YOUR_SALT_KEY>"' >> .env```
+- Add the litellm salt key. Used to encrypt/decrypt your LLM API key credentials
+
+```
+      $ echo 'LITELLM_SALT_KEY="<YOUR_SALT_KEY>"' >> .env
+```
 *NOTE: default is "sk-1234"*
 
-1-e: Create the “config.yaml” file as follows:
+- Create the “config.yaml” file as follows:
 
 ```
       general_settings:
@@ -85,7 +93,7 @@ Change directory into "litellm-proxy" and complete the following steps.
   	    database_url: "postgresql://llmproxy:dbpassword9090@db:5432/litellm"
 ```
 
-1-f: Create the prometheus.yml file as follows:
+- Create the prometheus.yml file as follows:
 
 ```
       global:
@@ -98,7 +106,7 @@ Change directory into "litellm-proxy" and complete the following steps.
             - targets: ["litellm:4000"]
 ```
 
-1-g: Edit the docker-compose.yaml file and verify that the config.yaml volume mount and --config flag are not commented out:
+- Edit the docker-compose.yaml file and verify that the config.yaml volume mount and --config flag are not commented out:
 
 ```
       services:
@@ -127,8 +135,7 @@ Open http://localhost:4000/ui in your browser and log in with your master key (*
             api_base: "http://host.docker.internal:11434"
 ```
 
-- Configure OpenAI LLM.
-  - Edit .env file and set your OPENAI_API_KEY
+- Configure OpenAI LLM. Edit .env file and set your OPENAI_API_KEY
 
 ```
       OPENAI_API_KEY="sk-proj-********"
@@ -143,14 +150,15 @@ Open http://localhost:4000/ui in your browser and log in with your master key (*
           api_key: os.environ/OPENAI_API_KEY
 ```
 
---- Create a Custom Guardrail ---
+---
+# Create a Custom Guardrail
 
-
-1. Custom Guardrail - using RegEx
-## Sequence Diagram
+## Custom Guardrail - using RegEx
+### Sequence Diagram
 ![LiteLLM Sequence Diagram](./docs/img/CustomGuardrail_Seq_Diagram.png)
 
-- Create a python program ["app.py"](./guardrails/check/app.py) that will run as a service with the "/check" endpoint. Using regex this endpoint will idetify PII patterns and return action=<ALLOW or BLOCK> along with the reason=<[{'type': '<US_SSN|EMAIL>'}]>.
+### PII Check Service - running on localhost:5001
+- Create a python program ["pii_check_service.py"](./guardrails/check/pii_check_service.py) that will run as a service with the "/check" endpoint. Using regex this endpoint will idetify PII patterns and return action=<ALLOW or BLOCK> along with the reason=<[{'type': '<US_SSN|EMAIL>'}]>.
 
 - Start the app.py service (running on port 5001) and test if its live by calling the "/health" endpoint.
 
@@ -188,3 +196,27 @@ docker-compose up -d
 - Test your new custom guardrail
 Login to the [Litellm UI](http://localhost:4000/ui/) and test the new custom guardrail.
 
+
+### PII Check Service - running in Kubernetes
+
+- Create a docker image of the check_pii_service
+```
+      docker build -t pii_checkservice:1.0.0 .
+```
+
+- Udate the my-values.yaml file with correct image name
+```
+      image:
+        repository: pii_check_service # ✅ check if the image name is correct
+        pullPolicy: IfNotPresent
+        # Overrides the image tag whose default is the chart appVersion.
+        tag: "1.0.1" # ✅ check if image version is correct
+```
+
+- Deploy the PII Check Service in Kubernetes
+```
+      helm install check_pii_service helm/check-microservice -f my-values.yaml
+```
+- Set port-forward (6001 --> 5001) to access the pii_check_service running in Kubernetes
+
+- Configure a new Custom Guardrail in Litellm to use this endpoint (http://localhost:6001)
