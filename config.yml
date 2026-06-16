@@ -1,0 +1,23 @@
+general_settings:
+  master_key: sk-1234 # 🔑 your proxy admin key (must start with sk-)
+  database_url: "postgresql://llmproxy:dbpassword9090@db:5432/litellm"
+
+model_list:
+    - model_name: "llama3.2"
+      litellm_params:
+        model: "ollama_chat/llama3.2"
+        api_base: "http://host.docker.internal:11434"
+
+    - model_name: openai-gpt-4o
+      litellm_params:
+        model: "openai/gpt-4o"
+        api_key: os.environ/OPENAI_API_KEY
+
+guardrails: 
+  - guardrail_name: "my-custom-pii-guardrail-api"
+    litellm_params:
+      guardrail: custom_pii_guardrail_api.myCustomGuardrailAPI  # 👈 Key change
+      mode: ["pre_call", "post_call", "during_call"]               # runs apply_guardrail method
+      default_on: False
+      api_base: os.environ/MY_GUARDRAIL_BASE_API_URL
+  
