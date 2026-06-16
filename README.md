@@ -2,13 +2,11 @@
 
 ## Introduction
 
-Before we begin, let's take a moment to understand what is an LLM - ["Introduction to Large Language Models"](https://docs.google.com/presentation/d/113l37j2Iu_cNM3habuHdruPWsan5Ng_iw6t_zEbaOUQ/edit?usp=sharing)
-
-LiteLLM is a custom LLM that is designed to be used as a guardrail for LLMs. It is built to ensure that the LLM is used in a responsible and ethical manner. LiteLLM is designed to be used in conjunction with other LLMs, and is not intended to replace them.
+Before we begin, let's take a moment to built some context - ["Introduction"](https://docs.google.com/presentation/d/113l37j2Iu_cNM3habuHdruPWsan5Ng_iw6t_zEbaOUQ/edit?usp=sharing)
 
 ## Problem
 
-As we have see from the "Introduction to Large Language Models", there are serious concerns especially when using in Enterprises. Here are a few:
+As we have see from the "Introduction", there are serious concerns especially when using in Enterprises. Here are a few:
 
 - Data & Knowledge
   - Data quality & freshness
@@ -44,7 +42,7 @@ One such system/platform is [LiteLLM](https://www.litellm.ai/) - It brings all t
 
 Sequence Diagram
 ![LiteLLM Sequence Diagram](https://sequencediagram.org/index.html?presentationMode=readOnly&shrinkToFit=true#initialData=C4S2BsFMAIGEFcDOwD2BbaBxeBDATgCZ44jgBQZAqopHgLR0B8AFAIwCUAMmJJ5wLIAuJLWgAHPOjHAy3YLwENGchULhJUabPiIlwzEXnGS009rJ59+StuwAKASQcB9WAAtIAYwDWzgMq0AG4gnpCC0IbGUjIqVgA8DI4u7l6+AXjBoYJ4kMDweAB20ADeOJ6gKAXhAIJ8APIA6tAAPtAAQpx1sADSADTQOTiIleHFANoASgCi1X51AHIAugC+y1Q0eAl0sQKCIABmJWUVVe2dPWsFKPLQKIGi1LSCxUnQdijgIQCe0ABqIB8cCc1jtrExbFZwgcjuUAVVap0GiDLAItpCBpBEGJKjQLPIrEpQeEEMh0NpCMRSMwclicZBzKCbBwkq4PD5-EEQmEMbSCrjQVsWSl2elMtzSrCRtBao0Wmcun0MUMpeNprMFit1rQ0Si1NCJSdwh0FZdrjA7g8NqNXu9Pp4fv9AcCtZsGEToPrjnCavUkWQrjcLUZHnhRjTsXzIGsgA)
----
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Installation
 
@@ -55,14 +53,13 @@ Please ensure the following pre-requisites have been installed:
 - Access to an LLM - Local, Cloud, or AWS Bedrock
 - LLM Access Keys (If connecting to a remote LLM)
 - Docker (To run LiteLLM Proxy)
+- Python (To create custom guardrails)
+  - pip
+- Postman (To test the API)
 - Kubernetes
   - Kubectl
   - Helm
-- Python (To create custom guardrails)
-  - pip
-  - uv
-- Postman (To test the API)
-- Grafana? (To view monitoring metrics in dashboads)
+
 
 ### Installation Steps
 
@@ -71,17 +68,17 @@ Please ensure the following pre-requisites have been installed:
 **Step-1:** Install LiteLLM locally in Docker
 Change directory into "litellm-proxy" and complete the following steps.
 1-a: Pull the LiteLLM database image
-```    $ docker pull ghcr.io/berriai/litellm-database:main-latest ```
+```   $ docker pull ghcr.io/berriai/litellm-database:main-latest```
 
 1-b: Download the docker compose file
 ```    $ curl -O https://raw.githubusercontent.com/BerriAI/litellm/main/docker-compose.yml```
 
 1-c: Add the master key - you can change this after setup
-```    $ echo 'LITELLM_MASTER_KEY="<YOUR_MASTER_KEY>"' > .env ```
+```   $ echo 'LITELLM_MASTER_KEY="<YOUR_MASTER_KEY>"' > .env```
 *NOTE: default is "sk-1234"*
 
 1-d: Add the litellm salt key. Used to encrypt/decrypt your LLM API key credentials
-```    $ echo 'LITELLM_SALT_KEY="<YOUR_SALT_KEY>"' >> .env ```
+```   $ echo 'LITELLM_SALT_KEY="<YOUR_SALT_KEY>"' >> .env```
 *NOTE: default is "sk-1234"*
 
 1-e: Create the “config.yaml” file as follows:
@@ -117,7 +114,7 @@ Change directory into "litellm-proxy" and complete the following steps.
 ```
 
 **Step-2:** Start the proxy server and test it
-```  $ docker compose up  ```
+``` $ docker compose up ```
 
 **Step-3:** Navigate to the LiteLLM UI and generate a virtual key
 Open http://localhost:4000/ui in your browser and log in with your master key (*default: sk-1234*).
